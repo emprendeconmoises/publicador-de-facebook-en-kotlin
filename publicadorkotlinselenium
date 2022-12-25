@@ -1,0 +1,47 @@
+import org.openqa.selenium.By
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeOptions
+import java.io.File
+import java.util.concurrent.TimeUnit
+
+fun main() {
+  // Inicializa el driver de Chrome
+  val options = ChromeOptions()
+  options.addArguments("--headless")
+  val driver: WebDriver = ChromeDriver(options)
+  driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS)
+
+  // Abre la página de inicio de sesión de Facebook
+  driver.get("https://www.facebook.com/login")
+
+  // Inicia sesión en la cuenta de Facebook
+  driver.findElement(By.name("email")).sendKeys("TU_EMAIL")
+  driver.findElement(By.name("pass")).sendKeys("TU_CONTRASEÑA")
+  driver.findElement(By.name("login")).click()
+
+  // Navega a la página de un grupo de Facebook
+  driver.get("https://www.facebook.com/groups/TU_ID_DE_GRUPO/")
+
+  // Haga clic en el botón "Crear publicación"
+  driver.findElement(By.xpath("//a[contains(@data-testid, 'create-post')]")).click()
+
+  // Seleccione la opción "Foto/video"
+  driver.findElement(By.xpath("//input[@accept='image/*,video/*']")).click()
+
+  // Seleccione la foto a publicar
+  val fileInput = driver.findElement(By.xpath("//input[@accept='image/*,video/*']"))
+  fileInput.sendKeys(File("RUTA_A_TU_FOTO").absolutePath)
+
+  // Espere a que la foto se cargue
+  Thread.sleep(5000)
+
+  // Escriba un mensaje para acompañar la foto
+  driver.findElement(By.xpath("//*[@name='xhpc_message_text']")).sendKeys("Hola! Este es un mensaje automatizado con una foto.")
+
+  // Haga clic en el botón "Publicar"
+  driver.findElement(By.xpath("//button[contains(text(), 'Publicar')]")).click()
+
+  // Cierra el navegador
+  driver.quit()
+}
